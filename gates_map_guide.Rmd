@@ -1,0 +1,85 @@
+---
+title: "Mapping Guide"
+author: "Aaron Williams and Vincent Pancini"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Section 1: Getting Started with R and RStudio
+## R and RStudio
+* R is a free, open-source software for statistical computing and data science. You can download R here.
+
+* RStudio is a free, open-source integrated development environment (IDE) that runs on top of R. R users almost exclusively open RStudio and rarely directly open R. You can download RStudio here.
+    + R is to RStudio as an engine is to a car.
+    
+## R Projects, Packages, and Functions
+* Functions in R are collections of code that cause certain actions when called. 
+
+* Packages in R are collections of functions and other code that extend the capabilities of base R.
+
+* Projects 
+
+## Why map with R? 
+R can have a steeper learning curve than point-and-click tools, such as QGIS or ArcGIS, for geospatial analysis and mapping. However, creating maps in R has many advantages including:
+
+1. Reproducibility: By creating maps with R code, you can easily share the outputs and the code that generated the output with collaborators, allowing them to replicate your work and catch errors easily.
+
+2. Iteration: With point and click software like ArcGIS, making 50 maps would be 50 times the work/time. But using R, we can easily make make many iterations of the same map with a few changes to the code.
+
+3. Easy Updates: Writing code provides a roadmap for others (and future you!) to quickly update parts of the map as needed. Say for example a collaborator wanted to change the legend colors of 50 state maps. With R, this is possible in just a few seconds!
+
+4. An Expansive ecosystem: There are several R packages that make it very easy to get spatial data, create static and interactive maps, and perform spatial analyses. This feature rich package ecosystem which all play nice together is frankly unmatched by other programming languages and even point and click tools like QGIS and ArcGIS. Some of these R packages include:
+  
+5. Cost: Most point-and-click tools for geospatial analysis are proprietary and expensive. R is free open-source software. The software and most of its packages can be used for free by anyone for almost any use case.
+
+# Section 2: Geospatial Data
+## Types of Geospatial Data
+  * points: zero-dimensional geospatial objects that are often a single longitude and latitude.
+
+  * lines: one-dimensional geospatial objects that are often a sequence of longitudes and latitudes.
+
+  * polygons: two-dimensional geospatial objects that are a often a sequence of longitudes and latitudes outlining a shape
+  
+## Spatial Concepts
+  * Geographic coordinate reference systems: data with a three-dimensional representation of the Earth (i.e., the data have not been projected from what we think of as a globe to what we think of as a map). Data are typically stored as longitude and latitude.
+  
+  * Projection: A mathematical transformation that converts three-dimensional coordinates for a spheroid/ellipsoid into a two-dimensions.
+  
+  * Projected coordinate reference system: data with a two-dimensional representation of the Earth. A projected CRS is the combination of a geographic CRS and a projection. Data are typically stored in feet or meters, which is useful for distance-based spatial operations like calculating distances and creating buffers.
+
+### Types of Projections
+  * Mercator projection
+  * Alber's Equal Area projection
+  * State Plane Coordinate Systems (SPCS)
+  * EPSG Codes
+
+## Geographies
+Maps can be made with various geographic units. Some of these geographies include:
+
+  * County - as of 2020, there are 3,143 counties and county equivalents in the 50 states and the District of Columbia. County equivalents include parishes and boroughs in Louisiana and Alaska respectively. 
+  
+  * ZIP Code Tabulation Areas (ZCTAs) - generalized areal representations of United States Postal Service (USPS) ZIP Code service areas. There are approximately 32,000 ZCTAs in the United States.
+  
+  * Public Use Microdata Areas (PUMAs) - non-overlapping, statistical geographic areas that partition each state or equivalent entity into geographic areas containing no fewer than 100,000 people each. As of 2012, there are 2,378 PUMAs in the United States. 
+
+# Section 3: Mapping Geospatial Data in R
+## Spatial data formats
+  * .csv - geographic information is often stored in .csv files, especially for point data where it is sensible to have longitude and latitude columns.
+  * .geojson - an open source file type for storing geospatial data in plain text.
+  * Shapefiles (.shp) - a proprietary file format created by ESRI, the company that creates ArcGIS. A shapefile is actually three or more binary files.
+
+## Loading spatial data
+  * library(sf) - plots sf data. This function automatically references the geometry column and makes it simple to combine point, line, and polygon data.
+  * library(tigris) - downloads and provides TIGER/Line shapefiles from the US Census Bureau. TIGER stands for Topologically Integrated Geographic Encoding and Referencing.
+  * library(tidycensus) - can return simple feature geometry for geographic units along with variables from the decennial US Census or American Community survey. By setting geometry = TRUE in a tidycensus function call, tidycensus will use the tigris package to retrieve the corresponding geographic dataset from the US Census Bureau and pre-merge it with the tabular data obtained from the Census API.
+    + API Keys
+  * library(crsuggest)
+
+# Bibliography and References
