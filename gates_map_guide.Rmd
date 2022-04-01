@@ -12,20 +12,41 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Section 1: Getting Started with R and RStudio {.tabset}
+# Step 1: Setting up the Environment {.tabset}
+After completing all of the **Action** items in this step, you will have all of the tools you need to begin making maps.
+
 ## Brief
 ### R and RStudio 
-* R is a free, open-source software for statistical computing and data science. You can download R [here](https://cran.r-project.org/).
+* R is a free, open-source software for statistical computing and data science.
+    + **Action:** Download R [here](https://cran.r-project.org/).
 
-* RStudio is a free, open-source integrated development environment (IDE) that runs on top of R. R users almost exclusively open RStudio and rarely directly open R. You can download RStudio [here](https://www.rstudio.com/products/rstudio/download/).
+* RStudio is a free, open-source integrated development environment (IDE) that runs on top of R. R users almost exclusively open RStudio and rarely directly open R.
+    + **Action:** Download RStudio [here](https://www.rstudio.com/products/rstudio/download/).
 
 ### RStudio Projects
 * Creating an RStudio project for each data analysis project allows you to keep all files associated with that project together, and serves as an easy way to tell R where to load/save files.
+    + **Action:** Now that you have installed R and RStudio, download the template and double click `template.Rproj` to get started.
+    
+### R Packages
+* Packages in R are collections of functions and other code that extend the capabilities of base R. Packages only need to be installed once per machine, but must be loaded once per session. The packages we use in this guide are `tidyverse`, `here`, `tidycensus`, `crsuggest`, `sf`, and `tigris`.
+    + **Action:** Install these packages by un-commenting the first six lines of code in `example.R` that start with `install.packages` and running those six lines of code.
+        + *Note:* Comments start with a `#`. When executing code, R will ignore anything that starts with `#`. You can add or remove `#`s to multiple lines of code by selecting the lines you want to comment using the cursor and using the key combination `command + shift + C` on Mac or `control + shift + C` on Windows.
+    + **Action:** Since packages only need to be installed once per machine, you can comment out these lines again after installing.
+    
+### APIs and Census API Key
+* An **application programming interface (API)** is a connection between computers or between computer programs that allows two applications to talk to each other. An API allows applications to access data and interact with external software components.
+
+* An **application programming interface (API) key** is a unique code used to identify and authenticate an application or user. API keys are often used to track and control how the API is being used.  
+
+* The Census Data API gives the public access to raw statistical data from various Census Bureau data programs. It is an efficient way to query data directly from Census Bureau servers. A Census API Key is required to use `tidycensus`.
+    + **Action:** Request a Census API Key [here](https://api.census.gov/data/key_signup.html).
+    + **Action:** After receiving your Census API Key, copy and paste it into `census_api_key.R`.
+
 
 ## Extended
 ### R and RStudio
 * Read more about R and RStudio below:
-    + [R dor Data Science](https://r4ds.had.co.nz/)
+    + [R for Data Science](https://r4ds.had.co.nz/)
     + [Urban Institute Intro to R](https://urbaninstitute.github.io/r-at-urban/intro-to-r.html#Introduction)
     
 ### RStudio Projects
@@ -35,6 +56,20 @@ knitr::opts_chunk$set(echo = TRUE)
     + [R for Data Science Chapter 8](https://r4ds.had.co.nz/workflow-projects.html)
     + [Using RStudio Projects from RStudio Support](https://support.rstudio.com/hc/en-us/articles/200526207-Using-RStudio-Projects)
     + [RStudio Projects and Working Directories: A Beginner's Guide](https://www.r-bloggers.com/2020/01/rstudio-projects-and-working-directories-a-beginners-guide/)
+
+### R Packages
+More information about these packages is included in later sections of ths guide.
+ * `library(ggplot2)` - part of the `tidyverse` ecosystem, `ggplot2` is a package for creating data visualizations including maps. 
+  * `library(sf)` - plots simple features (sf), which is a standardized way to encode spatial vector data. This function automatically references the geometry column and makes it simple to combine point, line, and polygon data.
+  * `library(tigris)` - downloads and provides TIGER/Line shapefiles from the US Census Bureau. TIGER stands for Topologically Integrated Geographic Encoding and Referencing.
+  * `library(tidycensus)` - can return simple feature geometry for geographic units along with variables from the decennial US Census or American Community survey. By setting geometry = TRUE in a tidycensus function call, tidycensus will use the tigris package to retrieve the corresponding geographic dataset from the US Census Bureau and pre-merge it with the tabular data obtained from the Census API.
+  * `library(crsuggest)` - attempts to match an input spatial dataset with corresponding coordinate reference systems that will work well for mapping and/or spatial analysis
+
+### API and API Keys
+You can also install your API key with `census_api_key("your-key-string", install = TRUE)`. To then obtain your keystring, you can use `library(dotenv)` and `Sys.getenv(<key name in .env file>)`.
+
+* Read more about API's and API keys [here](https://whatis.techtarget.com/definition/API-key). 
+* Read more about the Census Data API [here](https://www.census.gov/data/developers/guidance/api-user-guide.Overview.html).
 
 ### Why map with R?
 R can have a steeper learning curve than point-and-click tools, such as QGIS or ArcGIS, for geospatial analysis and mapping. However, creating maps in R has many advantages including:
@@ -53,191 +88,188 @@ R can have a steeper learning curve than point-and-click tools, such as QGIS or 
     + [Urban Institute Mapping in R](https://urbaninstitute.github.io/r-at-urban/mapping.html#Helpful_Learning_Resources)
 
 
-# Section 2: Geospatial Data {.tabset}
+# Step 2: Geospatial Data {.tabset}
+After this section, you will have a general understanding of basic geospatial data principles and how geospatial data differs from other types of data you may have worked with.
+
 ## Brief
-### Spatial Concepts
+### Types of Geospatial Data
+* Geospatial data may consist of points (a single longitude/latitude), lines (a sequence of points), or polygons (a sequence of lines that outline a shape). 
+* `library(sf)` stores geospatial data in a `geometry` column within R dataframes.
+
+### Importing Spatial Data
+`library(tigris)` downloads and provides TIGER/Line shapefiles from the US Census Bureau. TIGER stands for Topologically Integrated Geographic Encoding and Referencing.
+
+`library(tigris)` includes all standard census geographies including but not limited to states, counties, census tracts, PUMAs, ZCTAs, school districts, and congressional districts.
+
+By default, `library(tigris)` will download very large high-resolution TIGER line boundary files. Their larger size slows down processing time, and because they follow legal boundaries, some objects like bodies of water will not be visible. Cartographic boundary files are quicker to download and follow the US coastline, which better aligns with maps that we're used to looking at. The argument `cb = TRUE` pulls the cartographic boundary files, but setting the argument to `cb = FALSE` will pull the TIGER line files.
+
+`library(tidycensus)` was created by the creator of `library(tigris)` but has two major differences: first, `library(tidycensus)` allows you to import Census data, including demographic variables, simultaneously with the geographic data. simply include `geometry = TRUE` in the `get_acs()` function to pull the shapes data as `sf`; second, it only provides cartographic boundary files
+that are smaller, quicker to load, more familiar than TIGER/Line shapefiles as explained above. 
+
+`library(tidycensus)` sometimes requires the use of a Census API Key. See the **APIs and Census API Key** of **Step 1** for information on how to obtain and install your API Key.
+
+### Spatial Joins and Appending Spatial Info to Tour Data
+TO ADD 2022-04-01
+
+### Coordinate Reference Systems
+* All spatial data has a coordinate reference system (CRS), which specifies how to identify a location on earth
+
+* It is important for all spatial datasets that you're working with to be in the same CRS so that all maps and spatial operations are accurate. We recommend using `crsuggest::suggest_crs()` to find an appropriate CRS for your dataset and `coord_sf(crs = )` to change the CRS. See the **Examples** below for how to use this in practice.
+
+
+## Extended
+### Types of Geospatial Data
+* The `geom_sf` function from the `library_sf()` package plots `sf` data and automatically references the `geometry` column which stores the geospatial data.
+
+### Importing Spatial Data
+Both `library(tigris)` and `library(tidycensus)` have a year parameter that determines the year of the data obtained in functions like `tidycensus::get_acs()` or `tigris::counties()`. This parameter currently defaults to 2019 for `get_acs()` and 2020 for `tigris` functions. `tidycensus::get_acs()` also notably defaults to pulling 5-year ACS data rather than single year files. We recommend reading the documentation for these functions to understand the parameter options and their default values.
+
+* Geospatial data come in various formats. Different formats require different approaches to load into R:
+    + Shapefiles (.shp) - proprietary file format created by ESRI, the company that creates ArcGIS, and that is composed of three or more binary files. The `st_read()` function reads shapefiles into R in the `sf` format. Point the function at a file ending in `.shp` to read the data.
+    + GeoJSON (.geojson) - open source file type for storing geospatial data in plain text. The `st_read()` function also reads GeoJSON data. Point the function at a file ending in `.geojson` to read the data.
+    + CSV (.csv) - file type common for storing point data that has longitude and latitude columns. To load point data from a `.csv` file into R, first read the file using the `read_csv` function. Then, use the `st_as_sf()` function to convert it into an `sf` object by specifying the columns with longitude and latitude using the `coords` argument: e.g., `st_as_sf(data, coords = c("lon", "lat"))`
+
+### Coordinate Reference Systems
 Creating a map requires transforming the earth from its spherical shape (3D) to a planar shape (2D). A **coordinate reference system (CRS)** defines how the two-dimensional projected map relates to real places on the three-dimensional earth. When using multiple different geospatial datasets for mapping, they should have the same CRS prior to mapping. 
 
 We recommend using the State Plane Coordinate System (SPCS), which is only used in the United States, for mapping at the county-level. 
 
-We recommend using the `suggest_crs` function from the `crsuggest` package which helps spatial analysts determine an appropriate CRS for their data. 
-
-## Extended
-### Spatial Concepts
-* Geographic coordinate reference systems: data with a three-dimensional representation of the Earth (i.e., the data have not been projected from what we think of as a globe to what we think of as a map). Data are typically stored as longitude and latitude.
-  
-  * Projection: A mathematical transformation that converts three-dimensional coordinates for a spheroid/ellipsoid into a two-dimensions.
-  
-  * Projected coordinate reference system: data with a two-dimensional representation of the Earth. A projected CRS is the combination of a geographic CRS and a projection. Data are typically stored in feet or meters, which is useful for distance-based spatial operations like calculating distances and creating buffers.
+* You can also use the `st_crs()` function to find the CRS. The CRS code is located at the end in `ID[authority, SRID]`. You can change the CRS with `st_transform()`.
 
 * Read more about coordinate reference systems [here](https://docs.qgis.org/3.16/en/docs/gentle_gis_introduction/coordinate_reference_systems.html).
 * Read more about the State Plane Coordinate System [here](https://www.usgs.gov/faqs/what-state-plane-coordinate-system-can-gps-provide-coordinates-these-values#:~:text=The%20State%20Plane%20Coordinate%20System%20(SPCS)%2C%20which%20is%20only,the%20state's%20size%20and%20shape.).
 * Read more about the `crsuggest` package [here](https://github.com/walkerke/crsuggest).
 
-### Types of Geospatial Data
-  * points: zero-dimensional geospatial objects that are often a single longitude and latitude.
 
-  * lines: one-dimensional geospatial objects that are often a sequence of longitudes and latitudes.
+# Step 3: Examples {.tabset}
+After working through these examples, you will have an understanding of several methods for making maps at several different geography levels.
 
-  * polygons: two-dimensional geospatial objects that are a often a sequence of longitudes and latitudes outlining a shape
-
-### Spatial data formats
-  * .csv - geographic information is often stored in .csv files, especially for point data where it is sensible to have longitude and latitude columns.
-  * .geojson - an open source file type for storing geospatial data in plain text.
-  * Shapefiles (.shp) - a proprietary file format created by ESRI, the company that creates ArcGIS. A shapefile is actually three or more binary files.
-
-### Types of Projections
-  * Mercator projection
-  * Alber's Equal Area projection
-  * State Plane Coordinate Systems (SPCS)
-  * EPSG Codes
-
-### Geographies
-Maps can be made with various geographic units. Some of these geographies include:
-
-  * County - as of 2020, there are 3,143 counties and county equivalents in the 50 states and the District of Columbia. County equivalents include parishes and boroughs in Louisiana and Alaska respectively. 
-  
-  * ZIP Code Tabulation Areas (ZCTAs) - generalized areal representations of United States Postal Service (USPS) ZIP Code service areas. There are approximately 32,000 ZCTAs in the United States.
-  
-  * Public Use Microdata Areas (PUMAs) - non-overlapping, statistical geographic areas that partition each state or equivalent entity into geographic areas containing no fewer than 100,000 people each. As of 2012, there are 2,378 PUMAs in the United States. 
-
-
-# Section 3: Using Geospatial Data in R {.tabset}
 ## Brief
-### API and API Keys
-* An **application programming interface (API)** is a connection between computers or between computer programs that allows two applications to talk to each other. An API allows applications to access data and interact with external software components.
-
-* An **application programming interface (API) key** is a unique code used to identify and authenticate an application or user. API keys are often used to track and control how the API is being used.  
-
-* The Census Data API gives the public access to raw statistical data from various Census Bureau data programs. It is an efficient way to query data directly from Census Bureau servers. You can request a Census API Key [here](https://api.census.gov/data/key_signup.html).
-
-### Loading spatial data
-  * `library(ggplot2)` - part of the `tidyverse` ecosystem, `ggplot2` is a package for creating data visualizations including maps. 
-  * `library(sf)` - plots simple features (sf), which is a standardized way to encode spatial vector data. This function automatically references the geometry column and makes it simple to combine point, line, and polygon data.
-  * `library(tigris)` - downloads and provides TIGER/Line shapefiles from the US Census Bureau. TIGER stands for Topologically Integrated Geographic Encoding and Referencing.
-  * `library(tidycensus)` - can return simple feature geometry for geographic units along with variables from the decennial US Census or American Community survey. By setting geometry = TRUE in a tidycensus function call, tidycensus will use the tigris package to retrieve the corresponding geographic dataset from the US Census Bureau and pre-merge it with the tabular data obtained from the Census API.
-  * `library(crsuggest)` - attempts to match an input spatial dataset with corresponding coordinate reference systems that will work well for mapping and/or spatial analysis
+I think the extended version should contain overly-commented code (e.g., in depth explanation of spatial joins, etc.) and the brief version will just include the steps and code.
 
 ## Extended
-### API and API Keys
-* Read more about API's and API keys [here](https://whatis.techtarget.com/definition/API-key). 
-* Read more about the Census Data API [here](https://www.census.gov/data/developers/guidance/api-user-guide.Overview.html).
-
-
-# Section 4: Examples
-
-## Example 1 - Tract using tidycensus
+### Example 1 - Tract using tidycensus
+In this example, we show you how to create a census tract-level map with an example of using data from `tidycensus`.
 ```{r message = FALSE, warning = FALSE}
-# install.packages(c("tidyverse", "tidycensus", "crsuggest", "sf"))
 library(tidyverse)
 library(tidycensus)
 library(crsuggest)
 library(sf)
-census_api_key("75ed382ac6c6e5650cbc1801e618f88484e24642")
+source(here::here("census_api_key.R"))
 
 # Retrieve data
-tc_tracts <- tidycensus::get_acs(geography = "tract",
-                                 variables = c(medincome = "B19013_001"),
-                                 state = 51,
-                                 county = 059,
-                                 year = 2019,
-                                 geometry = TRUE,
-                                 progress_bar = FALSE)
+tc_tracts <- tidycensus::get_acs(
+  geography = "tract",
+  variables = c(medincome = "B19013_001"),
+  state = 51,
+  county = 059,
+  year = 2019,
+  geometry = TRUE,
+  progress_bar = FALSE
+)
 
 # Figure out best projection for data
-possible_crs <- crsuggest::suggest_crs(tc_tracts)
-
-# Transform data to match best projection
-tc_tracts_proj <- sf::st_transform(tc_tracts, crs = 6488)
+recommended_crs <- crsuggest::suggest_crs(tc_tracts, limit = 1)
 
 # Create map
-tract_tidycensus <- ggplot() +
-  geom_sf(data = tc_tracts_proj,
-          aes(fill = estimate)) +
+ggplot() +
+  geom_sf(data = tc_tracts,
+          aes(fill = estimate),
+          color = "white",
+          size = 0.1) +
+  coord_sf(crs = recommended_crs$crs_gcs) +
   scale_fill_gradient(high = "#132B43", low = "#56B1F7",
                       labels = scales::dollar) +
-  labs(title = "Median income income in Fairfax County, VA by census tract ",
+  labs(title = "Median income income in Fairfax County, VA by census tract",
        fill = "Median Income") +
   theme_void()
 
-ggsave("tract_tidycensus.png", plot = tract_tidycensus, width = 8, height = 5, units = "in")
+ggsave("tract_tidycensus.png", plot = last_plot(), width = 8, height = 5, units = "in")
 ```
 
-## Example 2 - ZCTA using tidycensus
+### Example 2 - ZCTA using tidycensus
+In this example, we show you how to create a ZCTA-level map with an example of pulling data from `tidycensus`. We use `tigris` to get shapefiles for a single county and join them to our `tidycensus` data.
 ```{r message = FALSE, warning = FALSE}
-# install.packages(c("tidyverse", "tidycensus", "crsuggest", "sf"))
-# library(tidyverse)
-# library(tidycensus)
-# library(crsuggest)
-# library(sf)
-# census_api_key("75ed382ac6c6e5650cbc1801e618f88484e24642")
-
 # Retrieve data
-tc_zcta <- tidycensus::get_acs(geography = "zcta",
-                               variables = c(medincome = "B19013_001"),
-                               state = 51,
-                               year = 2019,
-                               geometry = TRUE,
-                               progress_bar = FALSE)
+tc_zcta <- tidycensus::get_acs(
+  geography = "zcta",
+  variables = c(medincome = "B19013_001"),
+  state = 51,
+  year = 2019,
+  geometry = TRUE,
+  progress_bar = FALSE
+)
+
+# Pull county shapefiles to filter ZCTA observations from above to 
+virginia_counties <- tigris::counties(state = 51, year = 2019, cb = TRUE, progress_bar = FALSE) %>%
+  select(COUNTYFP, GEOID, geometry)
+
+# Now we can join the pumas to counties, and then filter to the county we're interested in
+my_data <- sf::st_join(tc_zcta, virginia_counties, join = st_intersects) %>%
+  filter(COUNTYFP == "059")
 
 # Figure out best projection for data
-possible_crs <- crsuggest::suggest_crs(tc_zcta)
-
-# Transform data to match best projection
-tc_zcta_proj <- sf::st_transform(tc_zcta, crs = 6591)
+recommended_crs <- crsuggest::suggest_crs(my_data, limit = 1)
 
 # Create map
-zcta_tidycensus <- ggplot() +
-  geom_sf(data = tc_zcta_proj,
-          aes(fill = estimate)) +
+ggplot() +
+  geom_sf(data = my_data,
+          aes(fill = estimate),
+          color = "white",
+          size = 0.1) +
+  coord_sf(crs = recommended_crs$crs_gcs) +
   scale_fill_gradient(high = "#132B43", low = "#56B1F7",
                       labels = scales::dollar) +
   labs(title = "Median income in Fairfax County, VA by ZCTA",
        fill = "Median Income") +
   theme_void()
 
-ggsave("zcta_tidycensus.png", plot = zcta_tidycensus, width = 8, height = 5, units = "in")
+ggsave("zcta_tidycensus.png", plot = last_plot(), width = 8, height = 5, units = "in")
 ```
 
-## Example 3 - PUMA using tidycensus
+### Example 3 - PUMA using tidycensus
+In this example, we show you how to create a PUMA-level map with an example of using data from `tidycensus`.
 ```{r message = FALSE, warning = FALSE}
-# install.packages(c("tidyverse", "tidycensus", "crsuggest", "sf"))
-# library(tidyverse)
-# library(tidycensus)
-# library(crsuggest)
-# library(sf)
-# census_api_key("75ed382ac6c6e5650cbc1801e618f88484e24642")
+# Retrieve PUMA data
+tc_puma <- tidycensus::get_acs(
+  geography = "public use microdata area",
+  variables = c(medincome = "B19013_001"),
+  state = 51,
+  year = 2019,
+  geometry = TRUE,
+  progress_bar = FALSE
+)
 
-# Retrieve data
-tc_puma <- tidycensus::get_acs(geography = "public use microdata area",
-                               variables = c(medincome = "B19013_001"),
-                               state = 51,
-                               year = 2019,
-                               geometry = TRUE,
-                               progress_bar = FALSE)
+# Pull county shapefiles to filter PUMA observations from above to 
+virginia_counties <- tigris::counties(state = 51, year = 2019, cb = TRUE, progress_bar = FALSE) %>% 
+  select(COUNTYFP, GEOID, geometry)
+
+# Now we can join the pumas to counties, and then filter to the county we're interested in
+my_data <- sf::st_join(tc_puma, virginia_counties, join = st_intersects) %>%
+  filter(COUNTYFP == "059")
 
 # Figure out best projection for data
-possible_crs <- crsuggest::suggest_crs(tc_puma)
-
-# Transform data to match best projection
-tc_puma_proj <- sf::st_transform(tc_puma, crs = 6591)
+recommended_crs <- crsuggest::suggest_crs(tc_puma, limit = 1)
 
 # Create map
-puma_tidycensus <- ggplot() +
-  geom_sf(data = tc_puma_proj,
-          aes(fill = estimate)) +
+ggplot() +
+  geom_sf(data = my_data,
+          aes(fill = estimate),
+          color = "white",
+          size = 0.1) +
+  coord_sf(crs = recommended_crs$crs_gcs) +
   scale_fill_gradient(high = "#132B43", low = "#56B1F7",
                       labels = scales::dollar) +
   labs(title = "Median income in Fairfax County, VA by PUMA",
        fill = "Median Income") +
   theme_void()
 
-ggsave("puma_tidycensus.png", plot = puma_tidycensus, width = 8, height = 5, units = "in")
+ggsave("puma_tidycensus.png", plot = last_plot(), width = 8, height = 5, units = "in")
 ```
 
-## Example 4 - PUMA and loading in original data
+### Example 4 - PUMA and loading in original data
+In this example, we show you how to create a PUMA-level map with an example of loading in your own original data and joining shapefiles to that data using `tigris`.
 ```{r message = FALSE, warning = FALSE}
-# install.packages(c("tidyverse", "tigris", "sf"))
 #library(tidyverse)
 library(tigris)
 #library(sf)
@@ -246,8 +278,10 @@ library(tigris)
 pumas <- tigris::pumas(state = 39, year = 2019, cb = TRUE, progress_bar = FALSE) %>%
   rename(puma = PUMACE10) %>%
   transmute(puma = as.numeric(puma))
-## the `year` argument defaults to 2020, but cartographic boundary PUMAs are not yet available for years after 2019, so use the argument `year = 2019` instead to request your data.
-## TIGER/Line shapefiles are high-resolution and follow legal boundaries. Their larger size slows down processing time, and because they follow legal boundaries, some objects like bodies of water will not be visible. Cartographic boundary files are quicker to download and follow the US coastline, which better aligns with maps that we're used to looking at. The argument `cb = TRUE` pulls the cartographic boundary files, but setting the argument to `cb = FALSE` will pull the TIGER line files.
+# the `year` argument defaults to 2020, but cartographic boundary PUMAs are not yet
+## available for years after 2019, so use the argument `year = 2019` instead to 
+## request your data.
+
 
 # Figure out best projection for data
 possible_crs <- crsuggest::suggest_crs(pumas)
@@ -277,11 +311,11 @@ my_data <- sf::st_join(ss_inc_puma, ohio_proj, join = st_intersects) %>%
   filter(COUNTYFP == "049")
 
 # And finally, we can create a map
-puma_own_data <- ggplot() +
+ggplot() +
   geom_sf(data = my_data,
           aes(fill = mean_ssinc),
-          color = "black",
-          size = 0.2) +
+          color = "white",
+          size = 0.1) +
   scale_fill_gradient(high = "#132B43", low = "#56B1F7",
                       labels = scales::dollar,
                       #trans = 'reverse'
@@ -290,7 +324,7 @@ puma_own_data <- ggplot() +
        fill = "Mean SSI") +
   theme_void()
 
-ggplot2::ggsave("puma_own_data.png", plot = puma_own_data, width = 8, height = 8, units = "in")
+ggsave("puma_own_data.png", plot = last_plot(), width = 8, height = 8, units = "in")
 ```
 
 
