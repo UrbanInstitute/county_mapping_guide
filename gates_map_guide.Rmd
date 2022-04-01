@@ -142,7 +142,7 @@ We recommend using the State Plane Coordinate System (SPCS), which is only used 
 
 
 # Step 3: Examples {.tabset}
-After working through these examples, you will have an understanding of several methods for making maps at several different geography levels.
+After working through these examples, you will have an understanding of several methods for making maps at different geography levels.
 
 ## Brief
 I think the extended version should contain overly-commented code (e.g., in depth explanation of spatial joins, etc.) and the brief version will just include the steps and code.
