@@ -158,7 +158,7 @@ library(sf)
 source(here::here("census_api_key.R"))
 
 # Retrieve data
-tc_tracts <- tidycensus::get_acs(
+tc_tracts <- get_acs(
   geography = "tract",
   variables = c(medincome = "B19013_001"),
   state = 51,
@@ -191,7 +191,7 @@ ggsave("tract_tidycensus.png", plot = last_plot(), width = 8, height = 5, units 
 In this example, we show you how to create a ZCTA-level map with an example of pulling data from `tidycensus`. We use `tigris` to get shapefiles for a single county and join them to our `tidycensus` data.
 ```{r message = FALSE, warning = FALSE}
 # Retrieve data
-tc_zcta <- tidycensus::get_acs(
+tc_zcta <- get_acs(
   geography = "zcta",
   variables = c(medincome = "B19013_001"),
   state = 51,
@@ -228,10 +228,10 @@ ggsave("zcta_tidycensus.png", plot = last_plot(), width = 8, height = 5, units =
 ```
 
 ### Example 3 - PUMA using tidycensus
-In this example, we show you how to create a PUMA-level map with an example of using data from `tidycensus`.
+In this example, we show you how to create a PUMA-level map with an example of using data from `tidycensus`. We use `tigris` to get shapefiles for a single county and join them to our `tidycensus` data.
 ```{r message = FALSE, warning = FALSE}
 # Retrieve PUMA data
-tc_puma <- tidycensus::get_acs(
+tc_puma <- get_acs(
   geography = "public use microdata area",
   variables = c(medincome = "B19013_001"),
   state = 51,
@@ -249,7 +249,7 @@ my_data <- sf::st_join(tc_puma, virginia_counties, join = st_intersects) %>%
   filter(COUNTYFP == "059")
 
 # Figure out best projection for data
-recommended_crs <- crsuggest::suggest_crs(tc_puma, limit = 1)
+recommended_crs <- crsuggest::suggest_crs(my_data, limit = 1)
 
 # Create map
 ggplot() +
@@ -270,9 +270,8 @@ ggsave("puma_tidycensus.png", plot = last_plot(), width = 8, height = 5, units =
 ### Example 4 - PUMA and loading in original data
 In this example, we show you how to create a PUMA-level map with an example of loading in your own original data and joining shapefiles to that data using `tigris`.
 ```{r message = FALSE, warning = FALSE}
-#library(tidyverse)
-library(tigris)
-#library(sf)
+# Load in original data
+ss_inc <- read_csv(here::here("mean_ssinc_oh_2019.csv"))
 
 # Pull the spatial data from (tigris)
 pumas <- tigris::pumas(state = 39, year = 2019, cb = TRUE, progress_bar = FALSE) %>%
@@ -282,33 +281,22 @@ pumas <- tigris::pumas(state = 39, year = 2019, cb = TRUE, progress_bar = FALSE)
 ## available for years after 2019, so use the argument `year = 2019` instead to 
 ## request your data.
 
-
-# Figure out best projection for data
-possible_crs <- crsuggest::suggest_crs(pumas)
-
-# Transform data to match best projection
-pumas_proj <- sf::st_transform(pumas, crs = 6549)
-
-# Load in original data
-ss_inc <- read_csv(here::here("mean_ssinc_oh_2019.csv"))
-
 # Join the puma shapefiles to our original puma-level data so we can map it
-## `left_join()` returns all rows from the first argument `x` (in this case `pumas_proj`), and all columns from the first two arguments `x` and `y `(in this case, `pumas_proj` and `ss_inc` respectively). 
-ss_inc_puma <- left_join(pumas_proj, ss_inc, by = "puma")
+## `left_join()` returns all rows from the first argument `x` (in this case `pumas_proj`), 
+## and all columns from the first two arguments `x` and `y `(in this case, `pumas_proj` and 
+## `ss_inc` respectively). 
+ss_inc_puma <- left_join(pumas, ss_inc, by = "puma")
 
 # We have data for the entire state, but we only want to map Franklin County.
 # First get county shapefiles for the state of Ohio
 ohio <- tigris::counties(state = 39, year = 2019, cb = TRUE, progress_bar = FALSE)
 
-# Figure out best projection for data
-possible_crs <- crsuggest::suggest_crs(ohio)
-
-# Transform data to match best projection
-ohio_proj <- sf::st_transform(ohio, crs = 6549)
-
 # Now we can join the pumas to counties, and then filter to the county we're interested in
-my_data <- sf::st_join(ss_inc_puma, ohio_proj, join = st_intersects) %>%
+my_data <- sf::st_join(ss_inc_puma, ohio, join = st_intersects) %>%
   filter(COUNTYFP == "049")
+
+# Figure out best projection for data
+recommended_crs <- crsuggest::suggest_crs(my_data, limit = 1)
 
 # And finally, we can create a map
 ggplot() +
