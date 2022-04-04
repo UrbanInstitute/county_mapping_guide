@@ -18,10 +18,10 @@ After completing all of the **Action** items in this step, you will have all of 
 ## Brief
 ### R and RStudio 
 * R is a free, open-source software for statistical computing and data science.
-    + **Action:** Download R [here](https://cran.r-project.org/).
+    + **Action:** Download and install R [here](https://cran.r-project.org/).
 
 * RStudio is a free, open-source integrated development environment (IDE) that runs on top of R. R users almost exclusively open RStudio and rarely directly open R.
-    + **Action:** Download RStudio [here](https://www.rstudio.com/products/rstudio/download/).
+    + **Action:** Download and install RStudio [here](https://www.rstudio.com/products/rstudio/download/).
 
 ### RStudio Projects
 * Creating an RStudio project for each data analysis project allows you to keep all files associated with that project together, and serves as an easy way to tell R where to load/save files.
@@ -40,7 +40,7 @@ After completing all of the **Action** items in this step, you will have all of 
 
 * The Census Data API gives the public access to raw statistical data from various Census Bureau data programs. It is an efficient way to query data directly from Census Bureau servers. A Census API Key is required to use `tidycensus`.
     + **Action:** Request a Census API Key [here](https://api.census.gov/data/key_signup.html).
-    + **Action:** After receiving your Census API Key, copy and paste it into `census_api_key.R`.
+    + **Action:** After receiving your Census API Key, copy and paste it into `<paste key here>` in `census_api_key.R`. Be sure to delete the `< >`, but keep the `" "` that are already included.
 
 
 ## Extended
@@ -241,11 +241,34 @@ tc_puma <- get_acs(
 )
 
 # Pull county shapefiles to filter PUMA observations from above to 
-virginia_counties <- tigris::counties(state = 51, year = 2019, cb = TRUE, progress_bar = FALSE) %>% 
-  select(COUNTYFP, GEOID, geometry)
+fairfax_county <- tigris::counties(state = 51, year = 2019, cb = TRUE, progress_bar = FALSE) %>% 
+  select(COUNTYFP, GEOID, geometry) %>%
+  filter(COUNTYFP == "059")
 
 # Now we can join the pumas to counties, and then filter to the county we're interested in
-my_data <- sf::st_join(tc_puma, virginia_counties, join = st_intersects) %>%
+my_data <- sf::st_join(tc_puma, fairfax_county, join = st_intersects) %>%
+  filter(COUNTYFP == "059")
+
+my_data <- sf::st_join(fairfax_county, tc_puma, join = st_contains) %>%
+  filter(COUNTYFP == "059")
+
+my_data <- sf::st_join(fairfax_county, tc_puma, join = st_contains)
+
+my_data <- sf::st_join(tc_puma, fairfax_county, join = st_covered_by) %>%
+  filter(COUNTYFP == "059")
+
+my_data <- sf::st_intersects(tc_puma, fairfax_county)
+
+my_data <- sf::st_intersects(tc_puma, fairfax_county, join = st_intersects) 
+
+my_data <- sf::st_join(tc_puma, fairfax_county, join = st_covered_by, left = FALSE) 
+
+my_data <- sf::st_join(tc_puma, fairfax_county, join = st_overlaps) 
+
+my_data <- sf::st_join(fairfax_county, tc_puma, join = st_intersects)
+
+
+my_data <- sf::st_join(tc_puma, fairfax_county, join = st_touches) %>% 
   filter(COUNTYFP == "059")
 
 # Figure out best projection for data
@@ -257,6 +280,10 @@ ggplot() +
           aes(fill = estimate),
           color = "white",
           size = 0.1) +
+  geom_sf(data = fairfax_county,
+          fill = NA,
+          color = "magenta",
+          size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
   scale_fill_gradient(high = "#132B43", low = "#56B1F7",
                       labels = scales::dollar) +
@@ -308,7 +335,7 @@ ggplot() +
                       labels = scales::dollar,
                       #trans = 'reverse'
   ) +
-  labs(title = "Mean Social Security Income in Franklin County, OH, by PUMA",
+  labs(title = "Mean Supplemental Security Income in Franklin County, OH, by PUMA",
        fill = "Mean SSI") +
   theme_void()
 
