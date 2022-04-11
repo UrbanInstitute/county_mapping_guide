@@ -1,3 +1,21 @@
+###############################################################################
+# MAPPING AT ZCTA LEVEL USING TIDYCENSUS DATA
+###############################################################################
+
+# Fill in the blanks shown by < > to create a map for your own county.
+# Be sure to replace the "<" and ">" themselves as well.
+
+# Load packages
+library(tidyverse)
+library(tidycensus)
+library(crsuggest)
+library(sf)
+library(tigris)
+
+# Tell R where to find your census API key so that you can use tidycensus
+source(here::here("census_api_key.R"))
+
+# Retrieve ZCTA level data from tidycensus
 tc_zcta <- get_acs(
   geography = "zcta",
   variables = c(<NAME OF VARIABLE HERE> = "<CENSUS VARIABLE ID HERE>"),

@@ -1,7 +1,21 @@
 ###############################################################################
 # MAPPING AT PUMA LEVEL USING TIDYCENSUS DATA
 ###############################################################################
-# Retrieve PUMA data
+
+# Fill in the blanks shown by < > to create a map for your own county.
+# Be sure to replace the "<" and ">" themselves as well.
+
+# Load packages
+library(tidyverse)
+library(tidycensus)
+library(crsuggest)
+library(sf)
+library(tigris)
+
+# Tell R where to find your census API key so that you can use tidycensus
+source(here::here("census_api_key.R"))
+
+# Retrieve PUMA level data from tidycensus
 tc_puma <- get_acs(
   geography = "public use microdata area",
   variables = c(<NAME OF VARIABLE HERE> = "<CENSUS VARIABLE ID HERE>"),

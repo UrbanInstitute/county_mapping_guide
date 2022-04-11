@@ -12,6 +12,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
+This guide is a brief introduction to mapping sub-county geographies with R. Counties can use this guide to understand the distribution of useful metrics at the census tract, zip code tabulation area (ZCTA), and public use microdata area (PUMA) levels. First we walk you through setting up the necessary tools, including R and RStudio, to create maps. Then, we explain how to work with geospatial data and how it differs from other types of data. Finally, we present examples of maps at the census tract, ZCTA, and PUMA levels.
+
 # Step 1: Setting up the Environment {.tabset}
 After completing all of the **Action** items in this step, you will have all of the tools you need to begin making maps.
 
@@ -65,7 +67,7 @@ library(tigris)
 
 * The Census Data API gives the public access to raw statistical data from various Census Bureau data programs. It is an efficient way to query data directly from Census Bureau servers. A Census API Key is required to use `tidycensus`.
     + **Action:** Request a Census API Key [here](https://api.census.gov/data/key_signup.html).
-    + **Action:** After receiving your Census API Key, copy and paste it into `<paste key here>` in `census_api_key.R`. Be sure to delete the `< >`, but keep the `" "` that are already included.
+    + **Action:** After receiving your Census API Key, copy and paste it into `<paste key here>` in each `census_api_key.R` located in the `tract_template`, `zcta_template`, and `puma_template` folders (pasting three times total). Be sure to delete the `< >`, but keep the `" "` that are already included.
 
 ```{r eval = FALSE}
 # RUN THIS IN census_api_key.R
@@ -216,7 +218,7 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Median household income in Fairfax County, VA by ZCTA",
        fill = "Median Household Income") +
@@ -272,6 +274,7 @@ We recommend using the State Plane Coordinate System (SPCS), which is only used 
 After working through these examples, you will have an understanding of several methods for making maps at different geography levels.
 
 ## Brief
+### Example 1 - Tract using tidycensus
 ```{r message = FALSE, warning = FALSE}
 # Load packages
 library(tidyverse)
@@ -312,7 +315,7 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Median household income in Fairfax County, VA by census tract",
        fill = "Median Household Income") +
@@ -359,7 +362,7 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Median household income in Fairfax County, VA by ZCTA",
        fill = "Median Household Income") +
@@ -409,7 +412,7 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Median household income in Fairfax County, VA by PUMA",
        fill = "Median Household Income") +
@@ -456,7 +459,7 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Mean Supplemental Security Income in Franklin County, OH, by PUMA",
        fill = "Mean Supplemental Security Income") +
@@ -537,12 +540,13 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Median household income in Fairfax County, VA by census tract",
        fill = "Median Household Income") +
   theme_void()
 ```
+
 * `geom_sf()` — a function used to visualize simple feature (sf) objects and thus create maps.
 
     + `data` — specifies the data to be displayed.
@@ -617,7 +621,7 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Median household income in Fairfax County, VA by ZCTA",
        fill = "Median Household Income") +
@@ -666,7 +670,7 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Median household income in Fairfax County, VA by PUMA",
        fill = "Median Household Income") +
@@ -723,7 +727,7 @@ ggplot() +
           color = "magenta",
           size = 0.4) +
   coord_sf(crs = recommended_crs$crs_gcs) +
-  scale_fill_gradientn(colors = c("#132B43", "#56B1F7"),
+  scale_fill_gradientn(colors = c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635"),
                       labels = scales::dollar) +
   labs(title = "Mean Supplemental Security Income in Franklin County, OH, by PUMA",
        fill = "Mean Supplemental Security Income") +

@@ -1,3 +1,10 @@
+###############################################################################
+# MAPPING AT CENSUS TRACT LEVEL USING TIDYCENSUS DATA
+###############################################################################
+
+# Fill in the blanks shown by < > to create a map for your own county.
+# Be sure to replace the "<" and ">" themselves as well.
+
 # Load packages
 library(tidyverse)
 library(tidycensus)
