@@ -5,7 +5,8 @@ date: "`r Sys.Date()`"
 output: 
   html_document:
     toc: true
-    toc_float: true
+    toc_float:
+      smooth_scroll: true
 ---
 
 ```{r setup, include = FALSE}
@@ -59,8 +60,8 @@ library(sf)
 library(tigris)
 ```
 
+### Census API Key
 
-### APIs and Census API Key
 * An **application programming interface (API)** is a connection between computers or between computer programs that allows two applications to talk to each other. An API allows applications to access data and interact with external software components.
 
 * An **application programming interface (API) key** is a unique code used to identify and authenticate an application or user. API keys are often used to track and control how the API is being used.  
@@ -739,3 +740,36 @@ ggsave("puma_own_data.png", plot = last_plot(), width = 8, height = 8, units = "
 
 
 # Bibliography and References
+The Comprehensive R Archive Network. https://cran.r-project.org/
+
+RStudio. https://www.rstudio.com/products/rstudio/download/
+
+United States Census Bureau. https://api.census.gov/data/key_signup.html
+
+Hadley Wickham and Garrett Grolemund (2017). R For Data Science https://r4ds.had.co.nz/
+
+Aaron Williams and Kyle Ueyama. Urban Institute Intro to R https://urbaninstitute.github.io/r-at-urban/intro-to-r.html#Introduction
+
+Hadley Wickham and Garrett Grolemund (2017). R For Data Science, Chapter 8 https://r4ds.had.co.nz/workflow-projects.html
+
+RStudio Support. Using RStudio Projects https://support.rstudio.com/hc/en-us/articles/200526207-Using-RStudio-Projects
+
+Martin Chan (2020). R Bloggers, RStudio Projects and Working Directories: A Beginner’s Guide https://www.r-bloggers.com/2020/01/rstudio-projects-and-working-directories-a-beginners-guide/
+
+Amy Reichert. What is an API key? https://whatis.techtarget.com/definition/API-key
+
+United States Census Bureau, Census Data API User Guide https://www.census.gov/data/developers/guidance/api-user-guide.Overview.html
+
+Urban Institute Mapping Guide https://urbaninstitute.github.io/r-at-urban/mapping.html#Helpful_Learning_Resources
+
+Kyle Walker. Analyzing US Census Data: Methods, Maps, and Models in R, Chapter 2 https://walker-data.com/census-r/an-introduction-to-tidycensus.html#searching-for-variables-in-tidycensus
+
+Kyle Walker and Matt Herman. Basic usage of tidycensus https://walker-data.com/tidycensus/articles/basic-usage.html#searching-for-variables
+
+Tim Sutton and Otto Dassau. A Basic Introduction to GIS, Chapter 8 https://docs.qgis.org/3.16/en/docs/gentle_gis_introduction/coordinate_reference_systems.html
+
+United States Geological Survey. What is the State Plane Coordinate System? Can GPS provide coordinates in these values? https://www.usgs.gov/faqs/what-state-plane-coordinate-system-can-gps-provide-coordinates-these-values#:~:text=The%20State%20Plane%20Coordinate%20System%20(SPCS)%2C%20which%20is%20only,the%20state's%20size%20and%20shape.
+
+Kyle Walker (2021), crsuggest, GitHub repository, https://github.com/walkerke/crsuggest
+
+Dixon & Moe (2021) https://htmlcolorcodes.com/
