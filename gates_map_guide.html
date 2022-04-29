@@ -2169,14 +2169,19 @@ ggplot() +
   labs(title = &quot;Median household income in Fairfax County, VA by ZCTA&quot;,
        fill = &quot;Median Household Income&quot;) +
   theme_void()</code></pre>
-<p><code>ggsave()</code> is a function from
+<ul>
+<li>The code above is explained in “Step 3: Examples”</li>
+</ul>
+<pre class="r"><code># Save plot as a .png file
+ggsave(&quot;zcta_tidycensus.png&quot;, plot = last_plot(), width = 8, height = 5, units = &quot;in&quot;)</code></pre>
+<ul>
+<li><code>ggsave()</code> is a function from
 <code>library(ggplot2)</code> for saving a plot. It defaults to saving
 the last plot that was displayed using the size of the current graphics
 device. The defaults can be changed with arguments such as
 <code>plot =</code>, <code>width =</code>, and
-<code>height =</code>.</p>
-<pre class="r"><code># Save plot as a .png file
-ggsave(&quot;zcta_tidycensus.png&quot;, plot = last_plot(), width = 8, height = 5, units = &quot;in&quot;)</code></pre>
+<code>height =</code>.</li>
+</ul>
 </div>
 <div id="extended-11" class="section level3">
 <h3>Extended</h3>
@@ -2393,10 +2398,14 @@ specified by <code>recommended_crs$crs_gcs</code>.</p></li>
 number of colors. We set the <code>colors</code> argument of this
 function equal to two colors using their hex code values
 <code>c(&quot;#132B43&quot;, &quot;#56B1F7&quot;)</code>, so it creates a 2-color gradient
-with these colors. The <code>colors</code> argument also excepts some
-color names such as “blue” or “red” but hex codes can be more precise
-and allow for a wider variety of colors to be used. See <a href="https://htmlcolorcodes.com/">here</a> for more information on hex
-color codes.</p>
+with these colors. Hex codes are a 6-character (hexadecimal) format for
+identifying and displaying colors that are used in other programming
+languages and applications including HTML.The <code>colors</code>
+argument also accepts some color names such as “blue” or “red” but hex
+codes can be more precise and allow for a wider variety of colors to be
+used. See <a href="https://htmlcolorcodes.com/">here</a> for more
+information on hex color codes. To use a different set of colors, simply
+replace the hex codes in the vector.</p>
 <ul>
 <li><code>labels</code> — specifies the labels for the <code>fill</code>
 values used in the legend. We use the <code>scales</code> package to
@@ -2770,7 +2779,7 @@ R, Chapter 2 <a href="https://walker-data.com/census-r/an-introduction-to-tidyce
 System? Can GPS provide coordinates in these values? <a href="https://www.usgs.gov/faqs/what-state-plane-coordinate-system-can-gps-provide-coordinates-these-values#" class="uri">https://www.usgs.gov/faqs/what-state-plane-coordinate-system-can-gps-provide-coordinates-these-values#</a>:~:text=The%20State%20Plane%20Coordinate%20System%20(SPCS)%2C%20which%20is%20only,the%20state’s%20size%20and%20shape.</p>
 <p>Kyle Walker (2021), crsuggest, GitHub repository, <a href="https://github.com/walkerke/crsuggest" class="uri">https://github.com/walkerke/crsuggest</a></p>
 <p>Dixon &amp; Moe (2021) <a href="https://htmlcolorcodes.com/" class="uri">https://htmlcolorcodes.com/</a></p>
-<p>Version: 2022-04-27 15:03:37</p>
+<p>Version: 2022-04-29 17:00:02</p>
 </div>
 
 

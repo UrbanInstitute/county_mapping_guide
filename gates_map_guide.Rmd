@@ -315,12 +315,14 @@ ggplot() +
   theme_void()
 ```
 
-`ggsave()` is a function from `library(ggplot2)` for saving a plot. It defaults to saving the last plot that was displayed using the size of the current graphics device. The defaults can be changed with arguments such as `plot =`, `width =`, and `height =`.
+* The code above is explained in "Step 3: Examples" 
 
 ```{r eval = FALSE}
 # Save plot as a .png file
 ggsave("zcta_tidycensus.png", plot = last_plot(), width = 8, height = 5, units = "in")
 ```
+
+* `ggsave()` is a function from `library(ggplot2)` for saving a plot. It defaults to saving the last plot that was displayed using the size of the current graphics device. The defaults can be changed with arguments such as `plot =`, `width =`, and `height =`.
 
 ### Extended
 No extended version.
@@ -490,7 +492,7 @@ ggplot() +
 
 * `coord_sf()` — a function that ensures that all layers use a common CRS. We set the `crs` argument equal to the `crs_gcs` column of the `recommended_crs` dataset, specified by `recommended_crs$crs_gcs`.
 
-* `scale_fill_gradientn()` — creates a gradient with "n" number of colors. We set the `colors` argument of this function equal to two colors using their hex code values `c("#132B43", "#56B1F7")`, so it creates a 2-color gradient with these colors. The `colors` argument also excepts some color names such as "blue" or "red" but hex codes can be more precise and allow for a wider variety of colors to be used. See [here](https://htmlcolorcodes.com/) for more information on hex color codes.
+* `scale_fill_gradientn()` — creates a gradient with "n" number of colors. We set the `colors` argument of this function equal to two colors using their hex code values `c("#132B43", "#56B1F7")`, so it creates a 2-color gradient with these colors. Hex codes are a 6-character (hexadecimal) format for identifying and displaying colors that are used in other programming languages and applications including HTML.The `colors` argument also accepts some color names such as "blue" or "red" but hex codes can be more precise and allow for a wider variety of colors to be used. See [here](https://htmlcolorcodes.com/) for more information on hex color codes. To use a different set of colors, simply replace the hex codes in the vector. 
 
     + `labels` — specifies the labels for the `fill` values used in the legend. We use the `scales` package to specify the unit as `dollar` with `scales::dollar`.
     
