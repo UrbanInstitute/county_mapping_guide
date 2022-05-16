@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains tools for creating choropleth maps that are useful for counties.
+This repository contains tools for creating choropleth maps that are useful for counties. The guide outlines how to create chorolpleth maps for three sub-county geographies: census tracts, ZCTAs, and PUMAs. The main content is available [here](https://ui-research.github.io/county_mapping_guide/county_mapping_guide).
 
 ## Contents
 
