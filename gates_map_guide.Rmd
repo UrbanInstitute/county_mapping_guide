@@ -1,6 +1,6 @@
 ---
 title: ''
-author: ''
+author: Vincent Pancini and Aaron R. Williams
 date: ''
 font: Lato
 output:
@@ -31,6 +31,8 @@ knitr::include_graphics(here::here('www', 'images', 'urban-institute-logo.png'))
 ```
 
 This guide is a brief introduction to mapping sub-county geographies with R. Counties can use this guide to understand the distribution of useful metrics at the census tract, zip code tabulation area (ZCTA), and public use microdata area (PUMA) levels. First we walk you through setting up the necessary tools, including R and RStudio, to create maps. Then, we explain how to work with geospatial data and how it differs from other types of data. Finally, we present examples of maps at the census tract, ZCTA, and PUMA levels.
+
+Please contact [Vincent Pancini](mailto:vpancini@urban.org) or [Aaron R. Williams](mailto:awilliams@urban.org) with any comments, questions, or concerns.
 
 <br>
 
@@ -67,7 +69,7 @@ After completing all of the **Action** items in this step, you will have all of 
 
 <br>
 
-## Running R Code {.tabset}
+## Running R Code
 ### Brief
 RStudio has four main panels: code editor (top left), R console (bottom left), environment and history (top right), and files, plots, packages, help, and viewer pane (bottom right). 
 
@@ -77,8 +79,7 @@ There are two main ways to run R code:
   
   * Type code into the R script in the code editor panel. Highlight the desired code and click `Run` in the top right of the code editor panel, or type Ctrl/command+enter. Scripts can be saved, so they are the best way to document your code for future use and reference.
 
-### Extended
-No extended version.
+
 
 <br>
 
@@ -106,6 +107,7 @@ library(tigris)
 
 ### Extended
 More information about these packages is included in later sections of this guide.
+
  * `library(ggplot2)` - part of the `tidyverse` ecosystem, `ggplot2` is a package for creating data visualizations including maps. 
  
   * `library(sf)` - plots simple features (sf), which is a standardized way to encode spatial vector data. This function automatically references the geometry column and makes it simple to combine point, line, and polygon data.
@@ -159,7 +161,7 @@ R can have a steeper learning curve than point-and-click tools, such as QGIS or 
 
 3. Easy Updates: Writing code provides a roadmap for others (and future you!) to quickly update parts of the map as needed. Say for example a collaborator wanted to change the legend colors of 50 state maps. With R, this is possible in just a few seconds!
 
-4. An Expansive ecosystem: There are several R packages that make it very easy to get spatial data, create static and interactive maps, and perform spatial analyses. This feature rich package ecosystem which all play nice together is frankly unmatched by other programming languages and even point and click tools like QGIS and ArcGIS. Some of these R packages include:
+4. An Expansive ecosystem: There are several R packages that make it very easy to get spatial data, create static and interactive maps, and perform spatial analyses. This feature rich package ecosystem which all play nice together is frankly unmatched by other programming languages and even point and click tools like QGIS and ArcGIS.
   
 5. Cost: Most point-and-click tools for geospatial analysis are proprietary and expensive. R is free open-source software. The software and most of its packages can be used for free by anyone for almost any use case.
 
@@ -171,7 +173,7 @@ R can have a steeper learning curve than point-and-click tools, such as QGIS or 
 # Step 2: Geospatial Data 
 After this section, you will have a general understanding of basic geospatial data principles and how geospatial data differs from other types of data you may have worked with.
 
-## Geographic Entities {.tabset}
+## Geographic Entities
 ### Brief
 * **Census tracts** are small, relatively permanent statistical subdivisions of a county that average about 4,000 inhabitants. The minimum census tract population is 1,200 inhabitants and the maximum population is about 8,000 inhabitants. Census tracts are uniquely numbered in each county with a numeric code. There were 84,414 census tracts in the United States (50 states and DC) in 2020.
 
@@ -179,8 +181,6 @@ After this section, you will have a general understanding of basic geospatial da
 
 * **Zip Code Tabulation Areas (ZCTAs)** are generalized areal representations of the United States Postal Service Zip Code service areas. ZCTAs may cross county boundaries. There were 33,642 ZCTAs in the United States (50 states and DC) in 2020.
 
-### Extended
-No extended version.
 
 <br>
 
@@ -233,16 +233,14 @@ Both `library(tigris)` and `library(tidycensus)` have a year parameter that dete
 
 <br>
 
-## FIPS codes {.tabset}
+## FIPS codes
 ### Brief
 Federal Information Processing Series (FIPS) are numeric codes that identify US states and counties. US states are identified by a 2-digit number and US counties are identified by a 3-digit number. For example, the FIPS code for Virginia is 51 and the FIPS code for Fairfax County is 059. The FIPS code for Fairfax County, VA is thus 059. FIPS codes are used to identify states and counties of interest in packages like `library(tidycensus)` and `library(tigris)`.
 
-### Extended
-No extended version.
 
 <br>
 
-## Spatial Joins and Appending Spatial Info to Your Data {.tabset}
+## Spatial Joins and Appending Spatial Info to Your Data
 ### Brief
 * Sometimes you will need to join and append spatial data. For instance, PUMAs and ZCTAs cross county lines, so you cannot pull them at the county level from `library(tidycensus)`. If you only want to map a specific county though, you can join your ZCTA or PUMA level data to a county, keeping only those ZCTAs or PUMAs within that county.
 
@@ -263,8 +261,6 @@ my_data <- sf::st_join(tc_zcta, fairfax_county, join = st_intersects) %>%
 
 * `filter()` keeps only the rows that satisfy the condition inside the parentheses.
 
-### Extended
-No extended version.
 
 <br>
 
@@ -292,7 +288,7 @@ We recommend using the State Plane Coordinate System (SPCS), which is only used 
 
 <br>
 
-## Creating maps using ggplot2 {.tabset}
+## Creating maps using ggplot2
 ### Brief
 The package `library(ggplot2)` (also contained in `library(tidyverse)`, so when you load `library(tidyverse)` you are also loading `library(ggplot2)`) creates graphics including maps. 
 
@@ -324,8 +320,6 @@ ggsave("zcta_tidycensus.png", plot = last_plot(), width = 8, height = 5, units =
 
 * `ggsave()` is a function from `library(ggplot2)` for saving a plot. It defaults to saving the last plot that was displayed using the size of the current graphics device. The defaults can be changed with arguments such as `plot =`, `width =`, and `height =`.
 
-### Extended
-No extended version.
 
 <br>
  
